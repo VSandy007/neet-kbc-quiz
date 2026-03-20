@@ -1,0 +1,15 @@
+{
+  "name": "NEET KBC Quiz",
+  "short_name": "KBC Quiz",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#0b0f2a",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    }
+  ]
+}

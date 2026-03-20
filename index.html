@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0b0f2a">
+
+<link rel="manifest" href="manifest.json">
+
+<title>NEET KBC Quiz</title>
+
+<style>
+body {
+    margin: 0;
+    font-family: Arial;
+    background: radial-gradient(circle, #0b0f2a, #000);
+    color: white;
+    text-align: center;
+}
+
+.container { padding: 15px; }
+
+.timer {
+    font-size: 22px;
+    color: gold;
+}
+
+.question {
+    font-size: 20px;
+    margin: 20px 0;
+}
+
+.option-btn {
+    display: block;
+    width: 100%;
+    margin: 10px 0;
+    padding: 12px;
+    border: 2px solid gold;
+    background: #111;
+    color: white;
+    border-radius: 8px;
+}
+
+.correct { background: green !important; }
+.wrong { background: red !important; }
+
+.score {
+    margin-top: 10px;
+    color: gold;
+}
+
+.footer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    background: black;
+    padding: 10px;
+}
+
+.footer a { color: gold; text-decoration: none; }
+</style>
+</head>
+
+<body>
+
+<div class="container">
+    <div class="timer">⏳ <span id="time">30</span>s</div>
+    <div class="question" id="question"></div>
+    <div id="options"></div>
+    <div class="score">Score: <span id="score">0</span></div>
+</div>
+
+<div class="footer">
+<a href="https://ig.me/m/your_username" target="_blank">Sponsor this App</a>
+</div>
+
+<script>
+const questions = [
+{
+q: "Powerhouse of cell?",
+options: ["Nucleus","Mitochondria","Ribosome","Golgi"],
+answer: 1
+},
+{
+q: "Insulin controls?",
+options: ["BP","Sugar","Temp","Oxygen"],
+answer: 1
+}
+];
+
+let i = 0, score = 0, time = 30, timer;
+
+const qEl = document.getElementById("question");
+const oEl = document.getElementById("options");
+const tEl = document.getElementById("time");
+const sEl = document.getElementById("score");
+
+function startTimer(){
+clearInterval(timer);
+time = 30;
+tEl.textContent = time;
+
+timer = setInterval(()=>{
+time--;
+tEl.textContent = time;
+if(time <= 0) nextQ();
+},1000);
+}
+
+function loadQ(){
+if(i >= questions.length){
+qEl.innerHTML = "🎉 Finished!";
+oEl.innerHTML = "";
+return;
+}
+
+let q = questions[i];
+qEl.textContent = q.q;
+oEl.innerHTML = "";
+
+q.options.forEach((opt,idx)=>{
+let btn = document.createElement("button");
+btn.className = "option-btn";
+btn.textContent = opt;
+
+btn.onclick = ()=>check(btn,idx);
+
+oEl.appendChild(btn);
+});
+
+startTimer();
+}
+
+function check(btn,idx){
+clearInterval(timer);
+let correct = questions[i].answer;
+
+if(idx === correct){
+btn.classList.add("correct");
+score += 10;
+sEl.textContent = score;
+playSound("correct");
+}else{
+btn.classList.add("wrong");
+playSound("wrong");
+}
+
+setTimeout(nextQ,1000);
+}
+
+function nextQ(){
+i++;
+loadQ();
+}
+
+function playSound(type){
+let audio = new Audio(
+type === "correct"
+? "https://cdn.pixabay.com/audio/2022/03/15/audio_c8c8a73467.mp3"
+: "https://cdn.pixabay.com/audio/2022/03/15/audio_ebc0d3b7b1.mp3"
+);
+audio.play();
+}
+
+loadQ();
+
+/* PWA Service Worker */
+if ("serviceWorker" in navigator) {
+navigator.serviceWorker.register("sw.js");
+}
+</script>
+
+</body>
+</html>
